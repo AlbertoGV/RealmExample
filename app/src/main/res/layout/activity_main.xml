@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:hint="Nombre"
+            android:id="@+id/EtNombre"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:hint="Edad"
+            android:id="@+id/EtEdad"
+            android:layout_below="@+id/EtNombre"
+            android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/buttonadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EtEdad"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="28dp"
+        android:text="ADD" />
+
+    <Button
+        android:id="@+id/buttonview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/buttonadd"
+        android:text="view"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="37dp"
+        android:layout_marginLeft="37dp"
+         />
+
+    <Button
+        android:id="@+id/dropdatabase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:text="drop"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="143dp"
+        android:layout_marginTop="103dp" />
+<TextView
+    android:layout_width="match_parent"
+    android:textSize="16dp"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/dropdatabase"
+    android:id="@+id/tvView"/>
+</RelativeLayout>
