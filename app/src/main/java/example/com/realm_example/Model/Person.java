@@ -25,9 +25,11 @@ public class Person extends RealmObject {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "Name="+ name +'\'' +
-                ",Age="+ age +
-                '}';
+
+        return  " "+'\n'+" "+
+                "Person" +'\n'+
+                "Name -> "+ name +'\n'+
+                "Age -> "+ age+'\n';
+
     }
 }
