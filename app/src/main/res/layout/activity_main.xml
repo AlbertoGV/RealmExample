@@ -27,8 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/EtEdad"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
         android:text="ADD" />
 
     <Button
@@ -36,21 +36,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/buttonadd"
-        android:text="view"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="37dp"
+        android:layout_marginStart="14dp"
         android:layout_marginLeft="37dp"
-         />
+        android:layout_marginTop="-3dp"
+        android:text="view all" />
 
     <Button
         android:id="@+id/dropdatabase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:text="drop"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="143dp"
-        android:layout_marginTop="103dp" />
+        android:layout_marginStart="111dp"
+        android:layout_marginTop="105dp"
+        android:text="drop" />
+
+    <Button
+        android:id="@+id/searchdatabase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="202dp"
+        android:layout_marginTop="107dp"
+        android:text="search" />
 <TextView
     android:layout_width="match_parent"
     android:textSize="16dp"

@@ -1,6 +1,7 @@
 package example.com.realm_example;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvView;
     private Button btnremove;
     private Button btnView;
-
+    private Button btnSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,18 @@ public class MainActivity extends AppCompatActivity {
         txtAge = findViewById(R.id.EtEdad);
         tvView = findViewById(R.id.tvView);
         btnAdd = findViewById(R.id.buttonadd);
+        btnSearch = findViewById(R.id.searchdatabase);
         btnremove = findViewById(R.id.dropdatabase);
         btnView = findViewById(R.id.buttonview);
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = txtName.getText().toString();
+                String age = txtAge.getText().toString();
+                search_to_database(name,age);
+            }
+        });
 
 
         btnremove.setOnClickListener(new View.OnClickListener() {
@@ -71,21 +82,47 @@ public class MainActivity extends AppCompatActivity {
 
     private void delete_from_database(String name, String age) {
         // obtain the results of a query
-        final RealmResults<Person> persons = realm.where(Person.class)
+        // All changes to data must happen in a transaction
+        Person person = realm.where(Person.class)
                 .equalTo("name",name)
                 .or()
                 .equalTo("age",age)
-                .findAll();
+                .findFirstAsync();
 
-        // All changes to data must happen in a transaction
         realm.executeTransaction(new Realm.Transaction() {
             @Override
-            public void execute(Realm realm) {
+            public void execute(@NonNull Realm realm) {
                 // remove a single object
-                persons.deleteFromRealm(0);
+                    if(person != null) {
+                        person.deleteFromRealm();
+                        refresh_filter(name,age);
+                        refresh_database();
+                    }
+
                 // Delete all matches
-                persons.deleteAllFromRealm();
-                refresh_database();
+               /* persons.deleteAllFromRealm();*/
+            }
+        });
+
+    }
+
+    private void search_to_database( String name,String age){
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(@NonNull Realm realm) {
+                // remove a single object
+                Person person = realm.where(Person.class)
+                        .contains("name", name)
+                        .and()
+                        .contains("age",age)
+                        .findFirst();
+                if(person != null) {
+                    refresh_filter(name, age);
+                }
+
+                // Delete all matches
+                /* persons.deleteAllFromRealm();*/
+
             }
         });
 
@@ -116,18 +153,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void refresh_database() {
+    private void refresh_filter(String name, String age){
         RealmResults<Person> result = realm.where(Person.class)
-                .findAllAsync();
-
+                .equalTo("name",name)
+                .or()
+                .equalTo("age",age)
+                .findAll();
         result.load();
         StringBuilder output = new StringBuilder();
-
         for(Person person:result){
             output.append(person);
 
         }
+        tvView.setText("");
+        tvView.setText(output);
 
+    }
+
+    private void refresh_database() {
+        RealmResults<Person> result = realm.where(Person.class)
+                .findAllAsync();
+        //Ordenado por Nombre Ascendete
+        result = result.sort("name"/*,Sort.DESCENDING*/);
+
+        result.load();
+
+        StringBuilder output = new StringBuilder();
+        for(Person person:result){
+            output.append(person);
+
+        }
+        tvView.setText("");
         tvView.setText(output);
 
     }
