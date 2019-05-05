@@ -4,67 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="8dp"
     tools:context=".MainActivity">
 
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_width="200dp"
+        android:hint="ID (AUTO GENERATE)"
+        android:id="@+id/EtId"
+        android:layout_height="wrap_content" />
 
-
-        <android.support.v7.widget.AppCompatEditText
-            android:layout_width="match_parent"
-            android:hint="Nombre"
-            android:id="@+id/EtNombre"
-            android:layout_height="wrap_content" />
-
-        <android.support.v7.widget.AppCompatEditText
-            android:layout_width="match_parent"
-            android:hint="Edad"
-            android:id="@+id/EtEdad"
-            android:layout_below="@+id/EtNombre"
-            android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_width="200dp"
+        android:hint="Name"
+        android:id="@+id/EtNombre"
+        android:layout_below="@id/EtId"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_width="200dp"
+        android:hint="DNI"
+        android:id="@+id/EtDni"
+        android:layout_below="@+id/EtNombre"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_width="200dp"
+        android:hint="Age"
+        android:id="@+id/EtEdad"
+        android:layout_below="@+id/EtDni"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.AppCompatEditText
+        android:layout_width="200dp"
+        android:hint="Genere"
+        android:id="@+id/Etgenere"
+        android:layout_below="@+id/EtEdad"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/buttonadd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/EtEdad"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+
+        android:layout_alignStart="@+id/EtId"
+
+        android:layout_alignEnd="@+id/dropdatabase"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="204dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="4dp"
         android:text="ADD" />
 
     <Button
         android:id="@+id/buttonview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/buttonadd"
+        android:layout_below="@+id/updatedatabase"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="14dp"
-        android:layout_marginLeft="37dp"
-        android:layout_marginTop="-3dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="201dp"
+        android:layout_marginTop="174dp"
+
+
         android:text="view all" />
 
     <Button
         android:id="@+id/dropdatabase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="111dp"
-        android:layout_marginTop="105dp"
-        android:text="drop" />
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+
+        android:layout_below="@+id/buttonadd"
+
+        android:layout_alignStart="@+id/EtId"
+        android:layout_marginStart="203dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="-72dp"
+        android:text="delete" />
 
     <Button
         android:id="@+id/searchdatabase"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="202dp"
-        android:layout_marginTop="107dp"
+        android:layout_marginStart="200dp"
+        android:layout_marginTop="77dp"
         android:text="search" />
+
+    <Button
+        android:id="@+id/updatedatabase"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="199dp"
+        android:layout_marginTop="123dp"
+        android:text="Update with ID" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Etgenere">
 <TextView
     android:layout_width="match_parent"
-    android:textSize="16dp"
+    android:textSize="20dp"
+    android:gravity="center"
     android:layout_height="wrap_content"
     android:layout_below="@+id/dropdatabase"
     android:id="@+id/tvView"/>
+    </ScrollView>
 </RelativeLayout>
