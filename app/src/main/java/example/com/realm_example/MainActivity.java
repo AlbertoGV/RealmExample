@@ -16,16 +16,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+
 import example.com.realm_example.Model.Person;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
+import static io.realm.Realm.getDefaultConfiguration;
 import static io.realm.Realm.getDefaultInstance;
+import static io.realm.Realm.migrateRealm;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText txtName,txtDNI,txtGenere;
+    private EditText txtName,txtDNI,txtGenere,txtLastName;
     private EditText txtAge,txtId;
     private Button btnAdd;
     private TextView tvView;
@@ -33,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private Button btnView;
     private Button btnSearch;
 
-    public int calculateIndex(){
 
+    public int calculateIndex(){
         Realm realm = Realm.getDefaultInstance();
         Number currentIdNum = realm.where(Person.class).max("id");
         int nextId;
@@ -53,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        txtName = findViewById(R.id.EtNombre);
+
+        txtName = findViewById(R.id.ETfullname);
         txtAge = findViewById(R.id.EtEdad);
         txtId = findViewById(R.id.EtId);
         tvView = findViewById(R.id.tvView);
-        txtDNI = findViewById(R.id.EtDni);
         txtGenere = findViewById(R.id.Etgenere);
         btnAdd = findViewById(R.id.buttonadd);
         btnSearch = findViewById(R.id.searchdatabase);
@@ -70,22 +75,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (txtId.getText().toString().isEmpty()) {
                  /*   int id = Integer.parseInt(txtId.getText().toString());*/
-                    String name = txtName.getText().toString();
+                    String fullname = txtName.getText().toString();
                     String age = txtAge.getText().toString();
-                    String DNI = txtDNI.getText().toString();
                     String genere = txtGenere.getText().toString();
 
 
-                    search_to_database_withoutID(name, age, DNI, genere);
+                    search_to_database_withoutID(fullname, age, genere);
                 } else {
                     if (txtId.getText().toString().length()>0) {
                         int id = Integer.parseInt(String.valueOf(txtId.getText().toString()));
-                        String name = txtName.getText().toString();
+                        String fullname = txtName.getText().toString();
                         String age = txtAge.getText().toString();
-                        String DNI = txtDNI.getText().toString();
                         String genere = txtGenere.getText().toString();
 
-                        search_to_database(id, name, age, DNI, genere);
+                        search_to_database(id, fullname, age, genere);
                     }
                 }
             }
@@ -97,23 +100,20 @@ public class MainActivity extends AppCompatActivity {
                         if (txtId.getText().toString().isEmpty()) {
                             txtId.setError("Necesita poner una ID");
                         }
-                                String name = txtName.getText().toString();
+                                String fullname = txtName.getText().toString();
                                 String age = txtAge.getText().toString();
-                                String DNI = txtDNI.getText().toString();
                                 String genere = txtGenere.getText().toString();
 
                                 if (txtId.getText().toString().equals("")) {
                                     txtId.setError("Obligatorio un id para poder modificar");
-                                } else if (name.isEmpty()) {
+                                } else if (fullname.isEmpty()) {
                                     txtName.setError("Introduzca un nombre");
                                 } else if (age.isEmpty()) {
                                     txtAge.setError("Introduzca una edad ");
-                                } else if (DNI.isEmpty()) {
-                                    txtDNI.setError("Introduzca un DNI");
                                 } else if (genere.isEmpty()) {
                                     txtGenere.setError("Introduzca un genero");
                                 }else{
-                                update_person( name, age, DNI, genere);
+                                update_person( fullname,age, genere);
                             }
                         }
                     });
@@ -124,15 +124,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                             /*   int id = Integer.parseInt(txtId.getText().toString());*/
-                            String name = txtName.getText().toString();
+                            String fullname = txtName.getText().toString();
                             String age = txtAge.getText().toString();
-                            String DNI = txtDNI.getText().toString();
                             String genere = txtGenere.getText().toString();
                             if(txtId.getText().toString().length()<0) {
-                            } if (name.isEmpty() || age.isEmpty() || DNI.isEmpty() || genere.isEmpty()) {
+                            } if (fullname.isEmpty() || age.isEmpty() || genere.isEmpty()) {
                             Toast.makeText(getApplicationContext(),"Ponga minimo el campo id o el nombre para eliminar",Toast.LENGTH_SHORT).show();
                             }else {
-                                delete_from_database_withoutID(name, age, DNI, genere);
+                                delete_from_database_withoutID(fullname, age , genere);
                             }
 
                             if(txtId.getText().toString().length()>0){
@@ -147,20 +146,17 @@ public class MainActivity extends AppCompatActivity {
                 btnAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String name = txtName.getText().toString().trim();
+                        String fullname = txtName.getText().toString().trim();
                         String age = txtAge.getText().toString().trim();
-                        String DNI = txtDNI.getText().toString().trim();
                         String genere = txtGenere.getText().toString().trim();
-                            if (name.isEmpty()) {
+                            if (fullname.isEmpty()) {
                             txtName.setError("Introduzca un nombre");
                         } else if (age.isEmpty()) {
                             txtAge.setError("Introduzca una edad ");
-                        } else if (DNI.isEmpty()) {
-                            txtDNI.setError("Introduzca un DNI");
                         } else if (genere.isEmpty()) {
                             txtGenere.setError("Introduzca un genero");
                         }else {
-                                save_to_database(name, age, DNI, genere);
+                                save_to_database(fullname, age, genere);
                             }
                     }
                 });
@@ -175,19 +171,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-    private void delete_from_database_withoutID(String name, String age, String dni, String genere) {
+    private void delete_from_database_withoutID(String fullname, String age, String genere) {
         Realm realm = Realm.getDefaultInstance();
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
 
                 Person person = realm.where(Person.class)
-                        .equalTo("name", name)
+                        .equalTo("fullname", fullname)
                         .or()
                         .equalTo("age", age)
-                        .or()
-                        .equalTo("dni", dni)
                         .or()
                         .equalTo("genere", genere)
                         .findFirst();
@@ -226,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
  }
 
-            private void search_to_database(int id, String name, String age, String dni, String genere) {
+            private void search_to_database(int id, String fullname, String age, String genere) {
                 Realm realm = Realm.getDefaultInstance();
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -235,24 +228,23 @@ public class MainActivity extends AppCompatActivity {
                         Person person = realm.where(Person.class)
                                 .equalTo("id", id)
                                 .or()
-                                .equalTo("name", name)
+                                .equalTo("fullname", fullname)
                                 .or()
                                 .equalTo("age", age)
                                 .or()
-                                .equalTo("dni", dni)
-                                .or()
+
                                 .equalTo("genere", genere)
                                 .findFirst();
 
                         if (person != null) {
-                            refresh_filter(id, name, age, dni, genere);
+                            refresh_filter(id,fullname,age, genere);
                         }
 
                     }
                 });
 
             }
-    private void search_to_database_withoutID( String name, String age, String dni, String genere) {
+    private void search_to_database_withoutID( String fullname, String age, String genere) {
         Realm realm = Realm.getDefaultInstance();
      realm.executeTransaction(new Realm.Transaction() {
             @Override
@@ -260,17 +252,15 @@ public class MainActivity extends AppCompatActivity {
                 // remove a single object
                 Person person = realm.where(Person.class)
 
-                        .equalTo("name", name)
+                        .equalTo("fullname", fullname)
                         .or()
                         .equalTo("age", age)
-                        .or()
-                        .equalTo("dni", dni)
                         .or()
                         .equalTo("genere", genere)
                         .findFirst();
 
 
-                    refresh_filter_withoutID( name, age, dni, genere);
+                    refresh_filter_withoutID( fullname, age, genere);
 
 
                 // Delete all matches
@@ -281,17 +271,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-    private void save_to_database(final String Name, final String Age, final String dni, final String genere) {
+    private void save_to_database(final String fullname, final String age, final String genere) {
         Realm realm = Realm.getDefaultInstance();
                 realm.executeTransactionAsync(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
                         int index = calculateIndex();
                         Person person = realm.createObject(Person.class, index);
-                        person.setName(Name);
-                        person.setAge(Age);
-                        person.setDni(dni);
+                        person.setFullname(fullname);
+                        person.setAge(age);
                         person.setGenere(genere);
                     }
                 }, new Realm.Transaction.OnSuccess() {
@@ -311,9 +299,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            private void update_person( String name, String age, String dni, String genere) {
+            private void update_person( String fullname, String age, String genere) {
                 Realm realm = Realm.getDefaultInstance();
-
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
@@ -321,9 +308,9 @@ public class MainActivity extends AppCompatActivity {
                         Person person = realm.where(Person.class)
                                 .equalTo("id", id)
                                 .findFirst();
-                        person.setName(name);
+                        person.setFullname(fullname);
+
                         person.setAge(age);
-                        person.setDni(dni);
                         person.setGenere(genere);
                         realm.insertOrUpdate(person);
                         refresh_database();
@@ -346,16 +333,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            private void refresh_filter(int id, String name, String age, String dni, String genere) {
+            private void refresh_filter(int id, String fullname, String age, String genere) {
                 Realm realm = Realm.getDefaultInstance();
                 RealmResults<Person> result = realm.where(Person.class)
                         .equalTo("id", id)
                         .or()
-                        .equalTo("name", name)
+                        .equalTo("fullname", fullname)
                         .or()
                         .equalTo("age", age)
-                        .or()
-                        .equalTo("dni", dni)
                         .or()
                         .equalTo("genere", genere)
                         .findAll();
@@ -372,14 +357,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-    private void refresh_filter_withoutID( String name, String age, String dni, String genere) {
+    private void refresh_filter_withoutID( String fullname, String age, String genere) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Person> result = realm.where(Person.class)
-                .equalTo("name", name)
+                .equalTo("fullname", fullname)
                 .or()
                 .equalTo("age", age)
-                .or()
-                .equalTo("dni", dni)
                 .or()
                 .equalTo("genere", genere)
                 .findAll();
@@ -390,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
                 output.append(person);
 
             }
+
             tvView.setText("");
             if (output != null) {
                 tvView.setText(output);
@@ -402,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
                 RealmResults<Person> result = realm.where(Person.class)
                         .findAllAsync();
                 //Ordenado por id Ascendete
-                result = result.sort("id"/*,Sort.DESCENDING*/);
+                result = result.sort("id", Sort.DESCENDING);
 
                 result.load();
 

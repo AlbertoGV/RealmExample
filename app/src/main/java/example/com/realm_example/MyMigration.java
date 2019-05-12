@@ -1,48 +1,33 @@
 package example.com.realm_example;
 
 import io.realm.DynamicRealm;
+import io.realm.DynamicRealmObject;
 import io.realm.FieldAttribute;
 import io.realm.RealmMigration;
+import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
 
 public class MyMigration implements RealmMigration {
-
     @Override
     public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-
         // DynamicRealm exposes an editable schema
         RealmSchema schema = realm.getSchema();
+    if (oldVersion == 0){
+            RealmObjectSchema personSchema = schema.get("Person");
 
-        // Migrate to version 1: Add a new class.
-        // Example:
-        // public Person extends RealmObject {
-        //     private String name;
-        //     private int age;
-        //     // getters and setters left out for brevity
-        // }
-        if (oldVersion == 0) {
-            schema.create("Person")
-                    .addField("name", String.class)
-                    .addField("age", String.class);
+            // Combine 'firstName' and 'lastName' in a new field called 'fullName'
+            personSchema
+                    .addField("fullname", String.class, FieldAttribute.INDEXED)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(DynamicRealmObject obj) {
+                            obj.set("fullname", obj.getString("firstname") + " " + obj.getString("lastName"));
+                        }
+                    })
+                    .removeField("firstname")
+                    .removeField("lastName");
             oldVersion++;
         }
 
-        // Migrate to version 2: Add a primary key + object references
-        // Example:
-        // public Person extends RealmObject {
-        //     private String name;
-        //     @PrimaryKey
-        //     private int age;
-        //     private Dog favoriteDog;
-        //     private RealmList<Dog> dogs;
-        //     // getters and setters left out for brevity
-        // }
-       /* if (oldVersion == 1) {
-            schema.get("Person")
-                    .addField("id", long.class, FieldAttribute.PRIMARY_KEY)
-                    .addRealmObjectField("favoriteDog", schema.get("Dog"))
-                    .addRealmListField("dogs", schema.get("Dog"));
-            oldVersion++;
-        }*/
-    }
-}
+    }}
+

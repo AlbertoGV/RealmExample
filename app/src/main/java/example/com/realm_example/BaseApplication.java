@@ -11,12 +11,19 @@ public class BaseApplication extends Application {
 public void onCreate() {
     super.onCreate();
     Realm.init(this);
-   /* RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build()**/
-    RealmConfiguration config2 = new RealmConfiguration.Builder()
-            .deleteRealmIfMigrationNeeded()
+    RealmConfiguration config = new RealmConfiguration.Builder()
+            .name("myrealm99.realm")
+            .schemaVersion(2)
+            .migration(new MyMigration())
             .build();
-    Realm.setDefaultConfiguration(config2);
+    // Automatically run migration if needed
+    Realm.setDefaultConfiguration(config);
+    Realm.getInstance(config);
+
+
+
 }
 
 
 }
+

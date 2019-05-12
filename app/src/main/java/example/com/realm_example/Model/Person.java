@@ -1,15 +1,15 @@
 package example.com.realm_example.Model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Person extends RealmObject {
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
+
+    public Person(){
+
     }
 
     public String getAge() {
@@ -20,7 +20,16 @@ public class Person extends RealmObject {
         this.age = age;
     }
 
-    String name;
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+    @Index
+    String fullname;
+
     String age;
 
     public String getGenere() {
@@ -33,15 +42,6 @@ public class Person extends RealmObject {
 
     String genere;
 
-    public String getDni() {
-        return dni;
-    }
-
-    public void setDni(String dni) {
-        this.dni = dni;
-    }
-
-    String dni;
 
     public int getId() {
         return id;
@@ -54,15 +54,15 @@ public class Person extends RealmObject {
     int id;
 
 
+
     @Override
     public String toString() {
 
                 return  " " +'\n'+
                         "-----Customer----" +'\n'+
                         "ID: "+ id +'\n'+
-                        "Name: "+ name +'\n'+
-                        "DNI: "+ dni +'\n'+
-                        "Genere: "+genere+'\n'+
+                        "FullName: "+ fullname+'\n'+
+                        "Genere: "+ genere+'\n'+
                         "Age: "+ age+'\n';
 
     }

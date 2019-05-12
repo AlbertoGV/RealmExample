@@ -15,21 +15,17 @@
 
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="200dp"
-        android:hint="Name"
-        android:id="@+id/EtNombre"
+        android:hint="FullName"
+        android:id="@+id/ETfullname"
         android:layout_below="@id/EtId"
         android:layout_height="wrap_content" />
-    <android.support.v7.widget.AppCompatEditText
-        android:layout_width="200dp"
-        android:hint="DNI"
-        android:id="@+id/EtDni"
-        android:layout_below="@+id/EtNombre"
-        android:layout_height="wrap_content" />
+
+
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="200dp"
         android:hint="Age"
         android:id="@+id/EtEdad"
-        android:layout_below="@+id/EtDni"
+        android:layout_below="@+id/ETfullname"
         android:layout_height="wrap_content" />
     <android.support.v7.widget.AppCompatEditText
         android:layout_width="200dp"
